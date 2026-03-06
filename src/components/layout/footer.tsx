@@ -129,6 +129,21 @@ export function Footer() {
             </Link>
           </div>
         </div>
+
+        <Separator className="my-4 bg-gray-700" />
+
+        {/* Agency credit */}
+        <p className="text-center text-xs text-gray-500">
+          Created by{" "}
+          <a
+            href="https://aivensoft.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-primary hover:text-white transition-colors"
+          >
+            Aivensoft
+          </a>
+        </p>
       </div>
     </footer>
   );
