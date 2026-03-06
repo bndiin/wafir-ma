@@ -24,6 +24,12 @@ const nextConfig: NextConfig = {
         destination: `/:locale/assurance/${slug}`,
         permanent: true,
       })),
+      // /fr/pret-personnel → /fr/credit-consommation
+      {
+        source: "/:locale(fr|ar|en)/pret-personnel",
+        destination: "/:locale/credit-consommation",
+        permanent: true,
+      },
     ];
   },
   images: {

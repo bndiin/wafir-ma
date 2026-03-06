@@ -30,7 +30,7 @@ export default function MentionsLegalesPage() {
           <ul className="text-muted-foreground space-y-1 mt-2">
             <li>Siège social : Casablanca, Maroc</li>
             <li>Email : contact@wafir.ma</li>
-            <li>Directeur de la publication : [Nom du directeur]</li>
+            <li>Directeur de la publication : Issam Bndiin</li>
           </ul>
         </div>
 
