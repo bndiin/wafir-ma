@@ -86,6 +86,9 @@
 .prose-custom table {
   width: 100%;
   margin-bottom: 1.5rem;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 .prose-custom a {
   color: #00b894;

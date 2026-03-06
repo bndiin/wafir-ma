@@ -153,8 +153,30 @@ export function ComparatorFlow() {
     if (currentStep === 4) {
       setIsSubmitting(true);
       try {
-        // Simulate API call (in production: POST to /api/leads)
-        await new Promise((resolve) => setTimeout(resolve, 1500));
+        const response = await fetch("/api/leads", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            productType: formData.productType,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            phone: formData.phone,
+            cityId: formData.cityId,
+            monthlyIncome: formData.monthlyIncome,
+            amount: formData.amount,
+            duration: formData.duration,
+            profession: formData.profession,
+            familyStatus: formData.familyStatus,
+            children: formData.children,
+            purpose: formData.purpose,
+            acceptTerms: formData.acceptTerms,
+          }),
+        });
+        const result = await response.json();
+        if (!response.ok || !result.success) {
+          throw new Error(result.message || "Erreur lors de l'envoi");
+        }
         setIsSubmitted(true);
         setCurrentStep(5);
       } catch {

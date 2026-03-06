@@ -74,7 +74,24 @@
     "blogTitle": "Latest Articles",
     "proCta": "Are you a professional?",
     "proCtaDesc": "Join our network of brokers, banks, and insurers. Receive qualified leads.",
-    "proCtaButton": "Become a partner"
+    "proCtaButton": "Become a partner",
+    "proCtaBadge": "Professional Area",
+    "proCtaBuyLeads": "Buy leads"
+  },
+  "whyWafir": {
+    "title": "Why choose Wafir.ma?",
+    "item1Title": "100% free, no commitment",
+    "item1Desc": "Compare credit and insurance offers with no fees or obligations.",
+    "item2Title": "Personalized results in 2 min",
+    "item2Desc": "Our algorithm compares 40+ banks and insurers to find the best offer.",
+    "item3Title": "Verified professionals",
+    "item3Desc": "All our partners are verified and rated by clients.",
+    "item4Title": "Advanced simulation tools",
+    "item4Desc": "Calculate your monthly payments, borrowing capacity, and notary fees.",
+    "avgRate": "Average mortgage rate",
+    "banks": "Banks & Insurers",
+    "cities": "Cities",
+    "simulators": "Simulators"
   },
   "tools": {
     "title": "Free Simulation Tools",
@@ -259,7 +276,8 @@
     "legal": "Legal Notice",
     "privacy": "Privacy Policy",
     "terms": "Terms of Use",
-    "rights": "All rights reserved."
+    "rights": "All rights reserved.",
+    "cities": "Cities"
   },
   "cta": {
     "freeSimulation": "Free simulation",

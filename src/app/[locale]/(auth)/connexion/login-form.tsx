@@ -3,7 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useLocale, useTranslations } from "next-intl";
-import { Mail, Lock, Eye, EyeOff, LogIn, Chrome } from "lucide-react";
+import { signIn } from "next-auth/react";
+import { Mail, Lock, Eye, EyeOff, LogIn, Chrome, Loader2 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,10 +18,35 @@ export function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: NextAuth signIn
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setError("Email ou mot de passe incorrect.");
+      } else {
+        window.location.href = `/${locale}/mon-compte`;
+      }
+    } catch {
+      setError("Une erreur est survenue. Veuillez réessayer.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = () => {
+    signIn("google", { callbackUrl: `/${locale}/mon-compte` });
   };
 
   return (
@@ -46,7 +72,7 @@ export function LoginForm() {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Google OAuth */}
-            <Button variant="outline" className="w-full" type="button">
+            <Button variant="outline" className="w-full" type="button" onClick={handleGoogleSignIn}>
               <Chrome className="h-4 w-4 me-2" />
               Continuer avec Google
             </Button>
@@ -111,8 +137,16 @@ export function LoginForm() {
                 </div>
               </div>
 
-              <Button type="submit" className="w-full">
-                <LogIn className="h-4 w-4 me-2" />
+              {error && (
+                <p className="text-sm text-destructive text-center">{error}</p>
+              )}
+
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? (
+                  <Loader2 className="h-4 w-4 me-2 animate-spin" />
+                ) : (
+                  <LogIn className="h-4 w-4 me-2" />
+                )}
                 Se connecter
               </Button>
             </form>

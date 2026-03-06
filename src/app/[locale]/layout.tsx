@@ -6,6 +6,8 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { WhatsAppWidget } from "@/components/shared/whatsapp-widget";
 import { ExitIntentPopup } from "@/components/shared/exit-intent";
+import PlausibleProvider from "next-plausible";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,6 +41,9 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} dir={dir} suppressHydrationWarning>
+      <head>
+        <PlausibleProvider domain="wafir.ma" trackOutboundLinks />
+      </head>
       <body
         className={`${inter.variable} ${ibmPlexArabic.variable} ${
           isArabic ? "font-arabic" : "font-sans"
@@ -52,6 +57,7 @@ export default async function LocaleLayout({
             <WhatsAppWidget />
             <ExitIntentPopup />
           </div>
+          <Toaster position="top-center" richColors />
         </NextIntlClientProvider>
       </body>
     </html>

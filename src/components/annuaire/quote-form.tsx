@@ -38,14 +38,29 @@ export function QuoteForm({ proName, proPhone, proWhatsApp }: QuoteFormProps) {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    setIsSubmitting(false);
-    setIsSubmitted(true);
-
-    // Reset after 3 seconds
-    setTimeout(() => setIsSubmitted(false), 3000);
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.name,
+          phone: formData.phone.replace(/\s/g, ""),
+          email: formData.email || "noemail@wafir.ma",
+          categoryId: formData.category || undefined,
+          message: formData.message || `Demande de devis pour ${proName}`,
+        }),
+      });
+      const result = await response.json();
+      if (!response.ok || !result.success) {
+        throw new Error(result.message);
+      }
+      setIsSubmitted(true);
+      setTimeout(() => setIsSubmitted(false), 5000);
+    } catch {
+      alert("Erreur lors de l'envoi. Veuillez réessayer.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const whatsappUrl = proWhatsApp

@@ -31,38 +31,42 @@ import { NAV_LINKS } from "@/lib/constants";
 
 export function Header() {
   const t = useTranslations("nav");
+  const tTools = useTranslations("tools");
   const locale = useLocale();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const otherLocales = ["fr", "ar", "en"].filter((l) => l !== locale);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="h-0.5 bg-gradient-to-r from-primary via-secondary to-primary" />
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
-        <Link href={`/${locale}`} className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary font-bold text-lg text-white">
+        <Link href={`/${locale}`} className="flex items-center gap-2.5">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary font-bold text-lg text-white shadow-sm">
             W
           </div>
-          <span className="text-xl font-bold text-foreground">
+          <span className="text-xl font-bold text-foreground tracking-tight">
             Wafir<span className="text-primary">.ma</span>
           </span>
         </Link>
 
         {/* Desktop Navigation */}
-        <nav className="hidden lg:flex items-center gap-1">
+        <nav className="hidden lg:flex items-center gap-0.5">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="gap-1">
-                <CreditCard className="h-4 w-4" />
+              <Button variant="ghost" className="gap-1.5 text-sm font-medium">
+                <CreditCard className="h-4 w-4 text-primary/70" />
                 {t("credit")}
-                <ChevronDown className="h-3 w-3" />
+                <ChevronDown className="h-3 w-3 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56">
               {NAV_LINKS.credit.map((link) => (
                 <DropdownMenuItem key={link.slug} asChild>
-                  <Link href={`/${locale}/${link.slug}`}>{link.labelFr}</Link>
+                  <Link href={`/${locale}/${link.slug}`}>
+                    {t(link.labelKey)}
+                  </Link>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -70,16 +74,18 @@ export function Header() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="gap-1">
-                <Shield className="h-4 w-4" />
+              <Button variant="ghost" className="gap-1.5 text-sm font-medium">
+                <Shield className="h-4 w-4 text-primary/70" />
                 {t("assurance")}
-                <ChevronDown className="h-3 w-3" />
+                <ChevronDown className="h-3 w-3 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-56">
               {NAV_LINKS.assurance.map((link) => (
                 <DropdownMenuItem key={link.slug} asChild>
-                  <Link href={`/${locale}/assurance/${link.slug}`}>{link.labelFr}</Link>
+                  <Link href={`/${locale}/assurance/${link.slug}`}>
+                    {t(link.labelKey)}
+                  </Link>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -87,25 +93,27 @@ export function Header() {
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="gap-1">
-                <Calculator className="h-4 w-4" />
+              <Button variant="ghost" className="gap-1.5 text-sm font-medium">
+                <Calculator className="h-4 w-4 text-primary/70" />
                 {t("tools")}
-                <ChevronDown className="h-3 w-3" />
+                <ChevronDown className="h-3 w-3 opacity-50" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="start" className="w-64">
               {NAV_LINKS.outils.map((link) => (
                 <DropdownMenuItem key={link.slug} asChild>
-                  <Link href={`/${locale}/outils/${link.slug}`}>{link.labelFr}</Link>
+                  <Link href={`/${locale}/outils/${link.slug}`}>
+                    {tTools(link.labelKey)}
+                  </Link>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button variant="ghost" asChild>
+          <Button variant="ghost" asChild className="text-sm font-medium">
             <Link href={`/${locale}/annuaire`}>{t("annuaire")}</Link>
           </Button>
-          <Button variant="ghost" asChild>
+          <Button variant="ghost" asChild className="text-sm font-medium">
             <Link href={`/${locale}/blog`}>{t("blog")}</Link>
           </Button>
         </nav>
@@ -129,7 +137,7 @@ export function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button asChild className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-white">
+          <Button asChild className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-white shadow-sm">
             <Link href={`/${locale}/comparer`}>{t("compare")}</Link>
           </Button>
           <Button variant="outline" asChild className="hidden md:inline-flex">
@@ -149,7 +157,7 @@ export function Header() {
                   Wafir<span className="text-primary">.ma</span>
                 </SheetTitle>
                 <SheetDescription className="sr-only">
-                  Menu de navigation
+                  Navigation menu
                 </SheetDescription>
               </SheetHeader>
 
@@ -164,7 +172,7 @@ export function Header() {
                     className="block text-sm py-2 ps-3 rounded-md text-foreground hover:bg-accent hover:text-primary transition-colors"
                     onClick={() => setMobileOpen(false)}
                   >
-                    {link.labelFr}
+                    {t(link.labelKey)}
                   </Link>
                 ))}
 
@@ -180,7 +188,7 @@ export function Header() {
                     className="block text-sm py-2 ps-3 rounded-md text-foreground hover:bg-accent hover:text-primary transition-colors"
                     onClick={() => setMobileOpen(false)}
                   >
-                    {link.labelFr}
+                    {t(link.labelKey)}
                   </Link>
                 ))}
 
@@ -207,6 +215,26 @@ export function Header() {
                 >
                   {t("blog")}
                 </Link>
+
+                <Separator className="my-3" />
+
+                {/* Language switcher in mobile menu */}
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
+                  <Globe className="inline h-3 w-3 me-1" />
+                  {locale === "fr" ? "Langue" : locale === "ar" ? "اللغة" : "Language"}
+                </p>
+                <div className="flex gap-2">
+                  {otherLocales.map((l) => (
+                    <Link
+                      key={l}
+                      href={`/${l}`}
+                      className="flex-1 text-center text-sm py-2 rounded-md border border-border text-foreground hover:bg-accent hover:text-primary transition-colors"
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      {l === "fr" ? "Français" : l === "ar" ? "العربية" : "English"}
+                    </Link>
+                  ))}
+                </div>
 
                 <Separator className="my-3" />
 

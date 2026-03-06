@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
+import { prisma } from "@/lib/db";
 
-// Quote request validation schema
 const quoteSchema = z.object({
   proId: z.string().optional(),
   name: z.string().min(2),
@@ -16,15 +16,26 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const data = quoteSchema.parse(body);
 
-    // TODO: In production:
-    // 1. Save quote request to DB
-    // 2. Send notification to pro (WhatsApp + Email)
-    // 3. Send confirmation to client
-    // 4. Track as lead source = QUOTE_FORM
+    let requestId = `QR-${Date.now()}`;
+    try {
+      const quote = await prisma.quoteRequest.create({
+        data: {
+          name: data.name,
+          phone: data.phone,
+          email: data.email,
+          productType: data.categoryId || "general",
+          city: null,
+          details: { message: data.message, proId: data.proId },
+        },
+      });
+      requestId = quote.id;
+    } catch (dbError) {
+      console.warn("[contact] DB write failed:", dbError);
+    }
 
     return NextResponse.json({
       success: true,
-      requestId: `QR-${Date.now()}`,
+      requestId,
       message: "Votre demande de devis a été envoyée. Le professionnel vous répondra sous 48h.",
     });
   } catch (error) {

@@ -8,6 +8,7 @@ import { Separator } from "@/components/ui/separator";
 export function Footer() {
   const t = useTranslations("footer");
   const tNav = useTranslations("nav");
+  const tTools = useTranslations("tools");
   const locale = useLocale();
 
   const topCities = CITIES.slice(0, 6);
@@ -41,7 +42,7 @@ export function Footer() {
                     href={`/${locale}/${link.slug}`}
                     className="text-sm text-gray-400 hover:text-white transition-colors"
                   >
-                    {link.labelFr}
+                    {tNav(link.labelKey)}
                   </Link>
                 </li>
               ))}
@@ -55,10 +56,10 @@ export function Footer() {
               {NAV_LINKS.assurance.map((link) => (
                 <li key={link.slug}>
                   <Link
-                    href={`/${locale}/${link.slug}`}
+                    href={`/${locale}/assurance/${link.slug}`}
                     className="text-sm text-gray-400 hover:text-white transition-colors"
                   >
-                    {link.labelFr}
+                    {tNav(link.labelKey)}
                   </Link>
                 </li>
               ))}
@@ -75,7 +76,7 @@ export function Footer() {
                     href={`/${locale}/outils/${link.slug}`}
                     className="text-sm text-gray-400 hover:text-white transition-colors"
                   >
-                    {link.labelFr}
+                    {tTools(link.labelKey)}
                   </Link>
                 </li>
               ))}
@@ -84,7 +85,7 @@ export function Footer() {
 
           {/* Villes */}
           <div>
-            <h3 className="font-semibold mb-3 text-primary">Villes</h3>
+            <h3 className="font-semibold mb-3 text-primary">{t("cities")}</h3>
             <ul className="space-y-2">
               {topCities.map((city) => (
                 <li key={city.slug}>
@@ -92,7 +93,7 @@ export function Footer() {
                     href={`/${locale}/annuaire?ville=${city.slug}`}
                     className="text-sm text-gray-400 hover:text-white transition-colors"
                   >
-                    {locale === "ar" ? city.nameAr : city.nameFr}
+                    {locale === "ar" ? city.nameAr : locale === "en" ? city.nameEn : city.nameFr}
                   </Link>
                 </li>
               ))}

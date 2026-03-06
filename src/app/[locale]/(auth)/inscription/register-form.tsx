@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useLocale } from "next-intl";
+import { signIn } from "next-auth/react";
 import {
   Mail,
   Lock,
@@ -14,6 +15,7 @@ import {
   Chrome,
   Building2,
   UserCircle,
+  Loader2,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -34,9 +36,59 @@ export function RegisterForm() {
     companyName: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: NextAuth register + OTP verification
+    setIsLoading(true);
+    setError("");
+
+    try {
+      const response = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName: formData.firstName,
+          lastName: formData.lastName,
+          email: formData.email,
+          phone: formData.phone.replace(/\s/g, ""),
+          password: formData.password,
+          role: accountType === "pro" ? "PRO" : "CLIENT",
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+        setError(result.message || "Erreur lors de l'inscription.");
+        return;
+      }
+
+      // Auto-login after registration
+      const signInResult = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      });
+
+      if (signInResult?.error) {
+        // Registration succeeded but auto-login failed, redirect to login
+        window.location.href = `/${locale}/connexion`;
+      } else {
+        window.location.href = accountType === "pro"
+          ? `/${locale}/espace-pro`
+          : `/${locale}/mon-compte`;
+      }
+    } catch {
+      setError("Une erreur est survenue. Veuillez réessayer.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = () => {
+    signIn("google", { callbackUrl: `/${locale}/mon-compte` });
   };
 
   const updateField = (field: string, value: string) => {
@@ -87,7 +139,7 @@ export function RegisterForm() {
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Google OAuth */}
-            <Button variant="outline" className="w-full" type="button">
+            <Button variant="outline" className="w-full" type="button" onClick={handleGoogleSignIn}>
               <Chrome className="h-4 w-4 me-2" />
               Continuer avec Google
             </Button>
@@ -225,8 +277,16 @@ export function RegisterForm() {
                 .
               </p>
 
-              <Button type="submit" className="w-full">
-                <UserPlus className="h-4 w-4 me-2" />
+              {error && (
+                <p className="text-sm text-destructive text-center">{error}</p>
+              )}
+
+              <Button type="submit" className="w-full" disabled={isLoading}>
+                {isLoading ? (
+                  <Loader2 className="h-4 w-4 me-2 animate-spin" />
+                ) : (
+                  <UserPlus className="h-4 w-4 me-2" />
+                )}
                 Créer mon compte
               </Button>
             </form>

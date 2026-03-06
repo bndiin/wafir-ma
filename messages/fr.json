@@ -74,7 +74,24 @@
     "blogTitle": "Nos derniers articles",
     "proCta": "Vous êtes un professionnel ?",
     "proCtaDesc": "Rejoignez notre réseau de courtiers, banques et assureurs. Recevez des leads qualifiés.",
-    "proCtaButton": "Devenir partenaire"
+    "proCtaButton": "Devenir partenaire",
+    "proCtaBadge": "Espace Professionnel",
+    "proCtaBuyLeads": "Acheter des leads"
+  },
+  "whyWafir": {
+    "title": "Pourquoi choisir Wafir.ma ?",
+    "item1Title": "100% gratuit, sans engagement",
+    "item1Desc": "Comparez les offres de crédit et d'assurance sans frais ni obligation.",
+    "item2Title": "Résultats personnalisés en 2 min",
+    "item2Desc": "Notre algorithme compare +40 banques et assureurs pour trouver la meilleure offre.",
+    "item3Title": "Professionnels vérifiés",
+    "item3Desc": "Tous nos partenaires sont vérifiés et notés par les clients.",
+    "item4Title": "Outils de simulation avancés",
+    "item4Desc": "Calculez vos mensualités, capacité d'emprunt et frais de notaire.",
+    "avgRate": "Taux moyen crédit immobilier",
+    "banks": "Banques & Assureurs",
+    "cities": "Villes",
+    "simulators": "Simulateurs"
   },
   "tools": {
     "title": "Outils de Simulation Gratuits",
@@ -259,7 +276,8 @@
     "legal": "Mentions légales",
     "privacy": "Politique de confidentialité",
     "terms": "Conditions d'utilisation",
-    "rights": "Tous droits réservés."
+    "rights": "Tous droits réservés.",
+    "cities": "Villes"
   },
   "cta": {
     "freeSimulation": "Simulation gratuite",

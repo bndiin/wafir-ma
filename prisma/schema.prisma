@@ -574,6 +574,35 @@ model Message {
 }
 
 // ==========================================
+// NEWSLETTER
+// ==========================================
+
+model Newsletter {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  locale    String   @default("fr")
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+// ==========================================
+// ANALYTICS
+// ==========================================
+
+model AnalyticsEvent {
+  id        String   @id @default(cuid())
+  event     String
+  props     Json?
+  sessionId String?
+  userId    String?
+  page      String?
+  createdAt DateTime @default(now())
+
+  @@index([event, createdAt])
+  @@index([createdAt])
+}
+
+// ==========================================
 // INSTITUTIONS (seeded data)
 // ==========================================
 
