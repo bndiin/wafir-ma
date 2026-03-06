@@ -1,0 +1,597 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// AUTH & USERS
+// ==========================================
+
+enum UserRole {
+  CLIENT
+  PRO
+  ADMIN
+}
+
+enum AccountStatus {
+  PENDING
+  ACTIVE
+  SUSPENDED
+  BANNED
+}
+
+model User {
+  id            String        @id @default(cuid())
+  email         String        @unique
+  phone         String?       @unique
+  phoneVerified Boolean       @default(false)
+  name          String?
+  firstName     String?
+  lastName      String?
+  image         String?
+  password      String?
+  role          UserRole      @default(CLIENT)
+  status        AccountStatus @default(ACTIVE)
+  locale        String        @default("fr")
+
+  emailVerified DateTime?
+  accounts      Account[]
+  sessions      Session[]
+
+  proProfile    ProProfile?
+  simulations   Simulation[]
+  quoteRequests QuoteRequest[]
+  reviews       Review[]
+  favorites     Favorite[]
+  alerts        Alert[]
+  sentMessages  Message[]     @relation("SentMessages")
+
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([role])
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ==========================================
+// PROFESSIONAL PROFILES
+// ==========================================
+
+enum ProType {
+  COURTIER_CREDIT
+  AGENT_ASSURANCE
+  BANQUE
+  BANQUE_PARTICIPATIVE
+  SOCIETE_FINANCEMENT
+  MUTUELLE
+}
+
+enum ProTier {
+  GRATUIT
+  PRO
+  PREMIUM
+}
+
+enum VerificationStatus {
+  PENDING
+  VERIFIED
+  REJECTED
+}
+
+model ProProfile {
+  id              String             @id @default(cuid())
+  userId          String             @unique
+  user            User               @relation(fields: [userId], references: [id])
+
+  companyName     String
+  slug            String             @unique
+  type            ProType
+  tier            ProTier            @default(GRATUIT)
+
+  descriptionFr   String?            @db.Text
+  descriptionAr   String?            @db.Text
+  descriptionEn   String?            @db.Text
+
+  logo            String?
+  photos          String[]
+  videoUrl        String?
+
+  address         String?
+  cityId          String
+  city            City               @relation(fields: [cityId], references: [id])
+  latitude        Float?
+  longitude       Float?
+  zones           ProZone[]
+
+  phone           String?
+  whatsapp        String?
+  website         String?
+  facebook        String?
+  instagram       String?
+  linkedin        String?
+
+  specialities    ProSpeciality[]
+  services        Service[]
+  openingHours    Json?
+  foundedYear     Int?
+  registreCommerce String?
+  patente         String?
+  acapsNumber     String?
+
+  verification    VerificationStatus @default(PENDING)
+  verifiedAt      DateTime?
+  verificationDocs String[]
+
+  avgRating       Float              @default(0)
+  reviewCount     Int                @default(0)
+  leadCount       Int                @default(0)
+  responseTime    Int?
+  viewCount       Int                @default(0)
+
+  reviews         Review[]
+  leads           LeadPro[]
+  subscription    Subscription?
+
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@index([cityId, type])
+  @@index([tier, verification])
+  @@index([slug])
+}
+
+// ==========================================
+// GEOGRAPHY
+// ==========================================
+
+model City {
+  id        String       @id @default(cuid())
+  nameFr    String       @unique
+  nameAr    String?
+  nameEn    String?
+  slug      String       @unique
+  latitude  Float
+  longitude Float
+  region    String?
+  searchVol Int?
+  isActive  Boolean      @default(true)
+
+  pros      ProProfile[]
+  proZones  ProZone[]
+  leads     Lead[]
+
+  @@index([slug])
+}
+
+model ProZone {
+  id        String     @id @default(cuid())
+  proId     String
+  pro       ProProfile @relation(fields: [proId], references: [id], onDelete: Cascade)
+  cityId    String
+  city      City       @relation(fields: [cityId], references: [id])
+
+  @@unique([proId, cityId])
+}
+
+// ==========================================
+// CATEGORIES & SERVICES
+// ==========================================
+
+enum CategoryGroup {
+  CREDIT
+  ASSURANCE
+  FINANCE_PARTICIPATIVE
+}
+
+model Category {
+  id          String        @id @default(cuid())
+  group       CategoryGroup
+  nameFr      String
+  nameAr      String?
+  nameEn      String?
+  slug        String        @unique
+  icon        String?
+  description String?       @db.Text
+  parentId    String?
+  parent      Category?     @relation("CategoryTree", fields: [parentId], references: [id])
+  children    Category[]    @relation("CategoryTree")
+  isActive    Boolean       @default(true)
+  sortOrder   Int           @default(0)
+
+  proSpecialities ProSpeciality[]
+  leads           Lead[]
+  blogPosts       BlogPost[]
+
+  @@index([slug])
+  @@index([group])
+}
+
+model ProSpeciality {
+  id         String     @id @default(cuid())
+  proId      String
+  pro        ProProfile @relation(fields: [proId], references: [id], onDelete: Cascade)
+  categoryId String
+  category   Category   @relation(fields: [categoryId], references: [id])
+
+  @@unique([proId, categoryId])
+}
+
+model Service {
+  id            String     @id @default(cuid())
+  proId         String
+  pro           ProProfile @relation(fields: [proId], references: [id], onDelete: Cascade)
+  nameFr        String
+  nameAr        String?
+  descriptionFr String?
+  descriptionAr String?
+  priceMin      Float?
+  priceMax      Float?
+  priceUnit     String?
+
+  @@index([proId])
+}
+
+// ==========================================
+// LEADS & QUOTES
+// ==========================================
+
+enum LeadSource {
+  COMPARATOR
+  QUICK_QUOTE
+  WHATSAPP
+  PHONE
+  EXIT_POPUP
+  BLOG_CTA
+  QUIZ
+}
+
+enum LeadStatus {
+  NEW
+  SENT
+  ACCEPTED
+  CONTACTED
+  CONVERTED
+  EXPIRED
+  REJECTED
+}
+
+enum LeadQuality {
+  HOT
+  WARM
+  COLD
+}
+
+model Lead {
+  id            String      @id @default(cuid())
+  reference     String      @unique @default(cuid())
+
+  clientName    String
+  clientPhone   String
+  clientEmail   String?
+  clientCity    String?
+  whatsappOptIn Boolean     @default(true)
+  userId        String?
+
+  categoryId    String
+  category      Category    @relation(fields: [categoryId], references: [id])
+  cityId        String?
+  city          City?       @relation(fields: [cityId], references: [id])
+  productType   String
+  amount        Float?
+  duration      Int?
+  details       Json?
+
+  source        LeadSource
+  quality       LeadQuality
+  status        LeadStatus  @default(NEW)
+  isExclusive   Boolean     @default(false)
+
+  matchedPros   LeadPro[]
+
+  phoneVerified Boolean     @default(false)
+
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  expiresAt     DateTime?
+
+  @@index([status, createdAt])
+  @@index([categoryId, cityId])
+  @@index([clientPhone])
+}
+
+model LeadPro {
+  id          String     @id @default(cuid())
+  leadId      String
+  lead        Lead       @relation(fields: [leadId], references: [id])
+  proId       String
+  pro         ProProfile @relation(fields: [proId], references: [id])
+
+  status      LeadStatus @default(SENT)
+  sentAt      DateTime   @default(now())
+  respondedAt DateTime?
+  quoteSent   Boolean    @default(false)
+  quoteAmount Float?
+
+  @@unique([leadId, proId])
+  @@index([proId, status])
+}
+
+model QuoteRequest {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+
+  productType String
+  amount      Float?
+  details     Json?
+
+  name        String
+  phone       String
+  email       String?
+  city        String?
+
+  createdAt   DateTime @default(now())
+}
+
+// ==========================================
+// REVIEWS
+// ==========================================
+
+enum ReviewStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  FLAGGED
+}
+
+model Review {
+  id        String       @id @default(cuid())
+  userId    String
+  user      User         @relation(fields: [userId], references: [id])
+  proId     String
+  pro       ProProfile   @relation(fields: [proId], references: [id])
+
+  rating    Int
+  title     String?
+  content   String       @db.Text
+  status    ReviewStatus @default(PENDING)
+
+  response    String?    @db.Text
+  respondedAt DateTime?
+
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+
+  @@unique([userId, proId])
+  @@index([proId, status])
+  @@index([rating])
+}
+
+// ==========================================
+// SIMULATIONS
+// ==========================================
+
+model Simulation {
+  id           String   @id @default(cuid())
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id])
+
+  type         String
+  inputs       Json
+  results      Json
+  email        String?
+
+  createdAt    DateTime @default(now())
+
+  @@index([userId, type])
+}
+
+// ==========================================
+// SUBSCRIPTIONS & PAYMENTS
+// ==========================================
+
+enum PaymentMethod {
+  CMI
+  ORANGE_MONEY
+  INWI_MONEY
+  CASHPLUS
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  EXPIRED
+}
+
+model Subscription {
+  id          String             @id @default(cuid())
+  proId       String             @unique
+  pro         ProProfile         @relation(fields: [proId], references: [id])
+
+  tier        ProTier
+  status      SubscriptionStatus @default(ACTIVE)
+  priceMAD    Float
+
+  startDate   DateTime
+  endDate     DateTime
+
+  payments    Payment[]
+
+  createdAt   DateTime           @default(now())
+  updatedAt   DateTime           @updatedAt
+}
+
+model Payment {
+  id             String        @id @default(cuid())
+  subscriptionId String
+  subscription   Subscription  @relation(fields: [subscriptionId], references: [id])
+
+  amountMAD      Float
+  method         PaymentMethod
+  transactionRef String?
+  status         String
+
+  paidAt         DateTime?
+  createdAt      DateTime      @default(now())
+}
+
+// ==========================================
+// BLOG
+// ==========================================
+
+enum PostStatus {
+  DRAFT
+  SCHEDULED
+  PUBLISHED
+  ARCHIVED
+}
+
+model BlogPost {
+  id           String     @id @default(cuid())
+
+  titleFr      String
+  titleAr      String?
+  titleEn      String?
+  slugFr       String     @unique
+  slugAr       String?    @unique
+  slugEn       String?    @unique
+  contentFr    String     @db.Text
+  contentAr    String?    @db.Text
+  contentEn    String?    @db.Text
+  excerptFr    String?
+  excerptAr    String?
+  excerptEn    String?
+
+  metaTitle    String?
+  metaDesc     String?
+
+  coverImage   String?
+
+  categoryId   String?
+  category     Category?  @relation(fields: [categoryId], references: [id])
+  tags         String[]
+
+  status       PostStatus @default(DRAFT)
+  authorId     String
+  publishedAt  DateTime?
+  scheduledAt  DateTime?
+  readingTime  Int?
+  wordCount    Int?
+
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+
+  @@index([status, publishedAt])
+  @@index([slugFr])
+}
+
+// ==========================================
+// FAVORITES & ALERTS
+// ==========================================
+
+model Favorite {
+  id     String @id @default(cuid())
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+  proId  String
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, proId])
+}
+
+model Alert {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+
+  type        String
+  criteria    Json
+  channel     String[]
+  isActive    Boolean  @default(true)
+
+  lastTriggered DateTime?
+  createdAt     DateTime @default(now())
+}
+
+// ==========================================
+// MESSAGING
+// ==========================================
+
+model Message {
+  id         String   @id @default(cuid())
+  senderId   String
+  sender     User     @relation("SentMessages", fields: [senderId], references: [id])
+  receiverId String
+  leadId     String?
+
+  content    String   @db.Text
+  isRead     Boolean  @default(false)
+
+  createdAt  DateTime @default(now())
+
+  @@index([receiverId, isRead])
+  @@index([leadId])
+}
+
+// ==========================================
+// INSTITUTIONS (seeded data)
+// ==========================================
+
+model Institution {
+  id          String   @id @default(cuid())
+  nameFr      String
+  nameAr      String?
+  nameEn      String?
+  slug        String   @unique
+  type        String
+  logo        String?
+  website     String?
+
+  currentRates Json?
+
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([type])
+}
