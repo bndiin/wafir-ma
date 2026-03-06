@@ -135,40 +135,6 @@ export default async function BlogArticlePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      {/* Breadcrumb */}
-      <nav
-        className="container mx-auto px-4 py-4"
-        aria-label="Fil d'Ariane"
-      >
-        <ol className="flex items-center gap-1 text-sm text-muted-foreground">
-          <li>
-            <Link
-              href={`/${locale}`}
-              className="hover:text-primary transition-colors"
-            >
-              Accueil
-            </Link>
-          </li>
-          <li>
-            <ChevronRight className="h-3 w-3" />
-          </li>
-          <li>
-            <Link
-              href={`/${locale}/blog`}
-              className="hover:text-primary transition-colors"
-            >
-              Blog
-            </Link>
-          </li>
-          <li>
-            <ChevronRight className="h-3 w-3" />
-          </li>
-          <li className="text-foreground font-medium truncate max-w-[200px] sm:max-w-none">
-            {article.title}
-          </li>
-        </ol>
-      </nav>
-
       {/* Article Header */}
       <header className="container mx-auto px-4 pb-8">
         <div className="mx-auto max-w-3xl">

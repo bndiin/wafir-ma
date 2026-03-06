@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import {
   Menu,
-  X,
   ChevronDown,
   Calculator,
   Shield,
@@ -13,14 +12,21 @@ import {
   Globe,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetTrigger,
+  SheetHeader,
+  SheetTitle,
+  SheetDescription,
+} from "@/components/ui/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
+import { Separator } from "@/components/ui/separator";
 import { NAV_LINKS } from "@/lib/constants";
 
 export function Header() {
@@ -35,7 +41,7 @@ export function Header() {
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link href={`/${locale}`} className="flex items-center gap-2">
-          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary text-primary-foreground font-bold text-lg">
+          <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary font-bold text-lg text-white">
             W
           </div>
           <span className="text-xl font-bold text-foreground">
@@ -45,7 +51,6 @@ export function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden lg:flex items-center gap-1">
-          {/* Crédit Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="gap-1">
@@ -57,18 +62,12 @@ export function Header() {
             <DropdownMenuContent align="start" className="w-56">
               {NAV_LINKS.credit.map((link) => (
                 <DropdownMenuItem key={link.slug} asChild>
-                  <Link href={`/${locale}/${link.slug}`}>
-                    {t(link.slug === "credit-immobilier" ? "creditImmobilier" :
-                       link.slug === "credit-consommation" ? "creditConsommation" :
-                       link.slug === "credit-auto" ? "creditAuto" :
-                       link.slug === "rachat-credit" ? "rachatCredit" : "mourabaha")}
-                  </Link>
+                  <Link href={`/${locale}/${link.slug}`}>{link.labelFr}</Link>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Assurance Dropdown */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="gap-1">
@@ -80,18 +79,12 @@ export function Header() {
             <DropdownMenuContent align="start" className="w-56">
               {NAV_LINKS.assurance.map((link) => (
                 <DropdownMenuItem key={link.slug} asChild>
-                  <Link href={`/${locale}/${link.slug}`}>
-                    {t(link.slug === "assurance-auto" ? "assuranceAuto" :
-                       link.slug === "assurance-habitation" ? "assuranceHabitation" :
-                       link.slug === "mutuelle-sante" ? "mutuelleSante" :
-                       link.slug === "assurance-vie" ? "assuranceVie" : "assuranceVoyage")}
-                  </Link>
+                  <Link href={`/${locale}/assurance/${link.slug}`}>{link.labelFr}</Link>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Outils */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="gap-1">
@@ -103,9 +96,7 @@ export function Header() {
             <DropdownMenuContent align="start" className="w-64">
               {NAV_LINKS.outils.map((link) => (
                 <DropdownMenuItem key={link.slug} asChild>
-                  <Link href={`/${locale}/outils/${link.slug}`}>
-                    {link.labelFr}
-                  </Link>
+                  <Link href={`/${locale}/outils/${link.slug}`}>{link.labelFr}</Link>
                 </DropdownMenuItem>
               ))}
             </DropdownMenuContent>
@@ -114,15 +105,13 @@ export function Header() {
           <Button variant="ghost" asChild>
             <Link href={`/${locale}/annuaire`}>{t("annuaire")}</Link>
           </Button>
-
           <Button variant="ghost" asChild>
             <Link href={`/${locale}/blog`}>{t("blog")}</Link>
           </Button>
         </nav>
 
-        {/* Right side: CTA + Locale + Mobile */}
+        {/* Right side */}
         <div className="flex items-center gap-2">
-          {/* Locale Switcher */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon" className="h-9 w-9">
@@ -140,11 +129,9 @@ export function Header() {
             </DropdownMenuContent>
           </DropdownMenu>
 
-          {/* Desktop CTA */}
-          <Button asChild className="hidden md:inline-flex bg-primary hover:bg-primary/90">
+          <Button asChild className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-white">
             <Link href={`/${locale}/comparer`}>{t("compare")}</Link>
           </Button>
-
           <Button variant="outline" asChild className="hidden md:inline-flex">
             <Link href={`/${locale}/connexion`}>{t("login")}</Link>
           </Button>
@@ -156,74 +143,85 @@ export function Header() {
                 <Menu className="h-5 w-5" />
               </Button>
             </SheetTrigger>
-            <SheetContent side={locale === "ar" ? "right" : "left"} className="w-80">
-              <nav className="flex flex-col gap-4 mt-8">
-                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+            <SheetContent side={locale === "ar" ? "right" : "left"} className="w-[300px] overflow-y-auto p-0">
+              <SheetHeader className="p-4 pb-2">
+                <SheetTitle className="text-lg font-bold">
+                  Wafir<span className="text-primary">.ma</span>
+                </SheetTitle>
+                <SheetDescription className="sr-only">
+                  Menu de navigation
+                </SheetDescription>
+              </SheetHeader>
+
+              <nav className="flex flex-col gap-1 px-4 pb-6">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mt-2 mb-1">
                   {t("credit")}
                 </p>
                 {NAV_LINKS.credit.map((link) => (
                   <Link
                     key={link.slug}
                     href={`/${locale}/${link.slug}`}
-                    className="text-base hover:text-primary transition-colors ps-3"
+                    className="block text-sm py-2 ps-3 rounded-md text-foreground hover:bg-accent hover:text-primary transition-colors"
                     onClick={() => setMobileOpen(false)}
                   >
                     {link.labelFr}
                   </Link>
                 ))}
 
-                <DropdownMenuSeparator />
+                <Separator className="my-3" />
 
-                <p className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">
+                <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-1">
                   {t("assurance")}
                 </p>
                 {NAV_LINKS.assurance.map((link) => (
                   <Link
                     key={link.slug}
-                    href={`/${locale}/${link.slug}`}
-                    className="text-base hover:text-primary transition-colors ps-3"
+                    href={`/${locale}/assurance/${link.slug}`}
+                    className="block text-sm py-2 ps-3 rounded-md text-foreground hover:bg-accent hover:text-primary transition-colors"
                     onClick={() => setMobileOpen(false)}
                   >
                     {link.labelFr}
                   </Link>
                 ))}
 
-                <DropdownMenuSeparator />
+                <Separator className="my-3" />
 
                 <Link
                   href={`/${locale}/outils`}
-                  className="text-base font-medium hover:text-primary"
+                  className="block text-sm font-medium py-2 rounded-md text-foreground hover:bg-accent hover:text-primary transition-colors"
                   onClick={() => setMobileOpen(false)}
                 >
                   {t("tools")}
                 </Link>
                 <Link
                   href={`/${locale}/annuaire`}
-                  className="text-base font-medium hover:text-primary"
+                  className="block text-sm font-medium py-2 rounded-md text-foreground hover:bg-accent hover:text-primary transition-colors"
                   onClick={() => setMobileOpen(false)}
                 >
                   {t("annuaire")}
                 </Link>
                 <Link
                   href={`/${locale}/blog`}
-                  className="text-base font-medium hover:text-primary"
+                  className="block text-sm font-medium py-2 rounded-md text-foreground hover:bg-accent hover:text-primary transition-colors"
                   onClick={() => setMobileOpen(false)}
                 >
                   {t("blog")}
                 </Link>
 
-                <DropdownMenuSeparator />
+                <Separator className="my-3" />
 
-                <Button asChild className="bg-primary hover:bg-primary/90">
-                  <Link href={`/${locale}/comparer`} onClick={() => setMobileOpen(false)}>
-                    {t("compare")}
-                  </Link>
-                </Button>
-                <Button variant="outline" asChild>
-                  <Link href={`/${locale}/connexion`} onClick={() => setMobileOpen(false)}>
-                    {t("login")}
-                  </Link>
-                </Button>
+                <div className="flex flex-col gap-2">
+                  <Button asChild className="bg-primary hover:bg-primary/90 text-white w-full">
+                    <Link href={`/${locale}/comparer`} onClick={() => setMobileOpen(false)}>
+                      {t("compare")}
+                    </Link>
+                  </Button>
+                  <Button variant="outline" asChild className="w-full">
+                    <Link href={`/${locale}/connexion`} onClick={() => setMobileOpen(false)}>
+                      {t("login")}
+                    </Link>
+                  </Button>
+                </div>
               </nav>
             </SheetContent>
           </Sheet>

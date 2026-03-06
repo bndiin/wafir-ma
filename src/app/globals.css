@@ -97,3 +97,35 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Force white text on primary/secondary buttons */
+[data-slot="button"][data-variant="default"] {
+  color: #ffffff !important;
+}
+[data-slot="button"][data-variant="secondary"] {
+  color: #ffffff !important;
+}
+
+/* Prose styling for blog articles */
+.prose-custom h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-top: 2.5rem;
+  margin-bottom: 1rem;
+}
+.prose-custom p {
+  margin-bottom: 1rem;
+  line-height: 1.75;
+}
+.prose-custom ul, .prose-custom ol {
+  margin-bottom: 1.5rem;
+}
+.prose-custom table {
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+.prose-custom a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
