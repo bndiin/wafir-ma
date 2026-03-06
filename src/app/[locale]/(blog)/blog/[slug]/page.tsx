@@ -27,12 +27,7 @@ import {
 } from "@/lib/blog-data";
 import { TableOfContents } from "./table-of-contents";
 
-// Generate static params for all known articles
-export async function generateStaticParams() {
-  return BLOG_ARTICLES.map((article) => ({
-    slug: article.slug,
-  }));
-}
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
