@@ -81,10 +81,12 @@ export function ProCard({ pro }: { pro: ProCardData }) {
   return (
     <Link href={`/annuaire/${pro.slug}`}>
       <Card
-        className={`group relative cursor-pointer transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5 ${
+        className={`group relative cursor-pointer transition-all duration-300 hover:shadow-xl hover:-translate-y-1 border-l-4 ${
           isPremium
-            ? "border-amber-500/40 shadow-amber-500/10 hover:border-amber-500/60"
-            : "hover:border-primary/30"
+            ? "border-l-[#f59e0b] border-amber-500/40 shadow-amber-500/10 hover:border-amber-500/60 hover:shadow-amber-500/10"
+            : pro.tier === "PRO"
+              ? "border-l-[#0984e3] hover:border-primary/30 hover:shadow-primary/5"
+              : "border-l-[#00b894] hover:border-primary/30 hover:shadow-primary/5"
         }`}
       >
         {isPremium && (

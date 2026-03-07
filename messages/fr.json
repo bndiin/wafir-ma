@@ -76,7 +76,39 @@
     "proCtaDesc": "Rejoignez notre réseau de courtiers, banques et assureurs. Recevez des leads qualifiés.",
     "proCtaButton": "Devenir partenaire",
     "proCtaBadge": "Espace Professionnel",
-    "proCtaBuyLeads": "Acheter des leads"
+    "proCtaBuyLeads": "Acheter des leads",
+    "howItWorks": {
+      "title": "Comment ça marche ?",
+      "subtitle": "Comparez les offres en 3 étapes simples",
+      "step1Title": "Décrivez votre projet",
+      "step1Desc": "Renseignez vos besoins : type de crédit, montant, durée ou type d'assurance souhaité.",
+      "step2Title": "Comparez les offres",
+      "step2Desc": "Notre algorithme analyse +40 banques et assureurs pour vous proposer les meilleures offres.",
+      "step3Title": "Choisissez et économisez",
+      "step3Desc": "Sélectionnez l'offre qui vous convient. Un conseiller vous accompagne gratuitement."
+    },
+    "testimonials": {
+      "title": "Ce que disent nos clients",
+      "subtitle": "Des milliers de Marocains nous font confiance",
+      "review1Name": "Karim B.",
+      "review1City": "Casablanca",
+      "review1Text": "Grâce à Wafir.ma, j'ai économisé 800 MAD/mois sur mon crédit immobilier. Le comparateur est rapide et fiable.",
+      "review2Name": "Fatima Z.",
+      "review2City": "Rabat",
+      "review2Text": "J'ai trouvé une assurance auto 30% moins chère en 5 minutes. Service exceptionnel !",
+      "review3Name": "Youssef M.",
+      "review3City": "Marrakech",
+      "review3Text": "Le simulateur de Mourabaha m'a permis de comprendre les coûts réels. Très utile pour comparer le participatif."
+    },
+    "partners": {
+      "title": "Ils nous font confiance"
+    },
+    "statsSection": {
+      "simulations": "Simulations réalisées",
+      "partners": "Partenaires bancaires",
+      "cities": "Villes couvertes",
+      "savings": "Économie moyenne"
+    }
   },
   "whyWafir": {
     "title": "Pourquoi choisir Wafir.ma ?",

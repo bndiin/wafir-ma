@@ -39,7 +39,7 @@ export function Header() {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="h-0.5 bg-gradient-to-r from-primary via-secondary to-primary" />
+      <div className="h-0.5 bg-gradient-to-r from-[#00b894] via-[#0984e3] via-[#6c5ce7] to-[#00b894] animate-gradient-shift" />
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         {/* Logo */}
         <Link href={`/${locale}`} className="flex items-center gap-2.5">
